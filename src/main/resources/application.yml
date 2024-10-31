@@ -1,0 +1,26 @@
+spring:
+  application:
+   name: redis-guard
+  data:
+    redis:
+      host: localhost                  # Replace with your Redis host
+      port: 6379                       # Replace with your Redis TLS port
+      username: admin
+      password: madhukar          # Password for Redis
+      ssl:                   # Enable SSL/TLS
+       enable: true
+
+      ssl-config:
+       jks-path: classpath:redis.jks
+       jks-password: changeit
+
+      lettuce:
+        pool:
+          max-active: 10               # Max active connections in the pool
+          max-idle: 5                  # Max idle connections in the pool
+          min-idle: 1                  # Min idle connections in the pool
+
+logging:
+  level:
+    root: INFO
+
