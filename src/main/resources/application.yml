@@ -7,6 +7,7 @@ spring:
       port: 6379                       # Replace with your Redis TLS port
       username: admin
       password: madhukar          # Password for Redis
+      database: 1
       ssl:                   # Enable SSL/TLS
        enable: true
 

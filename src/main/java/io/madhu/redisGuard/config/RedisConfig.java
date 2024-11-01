@@ -21,6 +21,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -31,8 +32,7 @@ import java.security.KeyStore;
 public class RedisConfig {
 
     private final ResourceLoader resourceLoader;
-    private final String jksPassword;
-    private final String jksPath;
+    private final String pemCertificate = "";
 
     @Value("${spring.data.redis.username}")
     private String username;
@@ -43,12 +43,23 @@ public class RedisConfig {
     @Value("${spring.data.redis.ssl.enable}")
     private boolean isSslEnabled;
 
-    public RedisConfig(ResourceLoader resourceLoader,
-                       @Value("${spring.data.redis.ssl-config.jks-password}") String jksPassword,
-                       @Value("${spring.data.redis.ssl-config.jks-path}") String jksPath) {
+    @Value("${spring.data.redis.host}")
+    private String hostName;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
+
+    @Value("${spring.data.redis.ssl-config.jks-password}")
+    private String jksPassword;
+
+    @Value("${spring.data.redis.ssl-config.jks-path}")
+    private String jksPath;
+
+    @Value("${spring.data.redis.database}")
+    private Integer database;
+
+    public RedisConfig(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-        this.jksPassword = jksPassword;
-        this.jksPath = jksPath;
     }
 
     @Bean(destroyMethod = "shutdown")
@@ -59,17 +70,20 @@ public class RedisConfig {
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() throws IOException {
         // Redis standalone configuration
-        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration("localhost", 6379);
-        redisConfig.setUsername("admin");
-        redisConfig.setPassword("madhukar");
-
+        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration(hostName, port);
+        redisConfig.setUsername(username);
+        redisConfig.setPassword(password);
+        redisConfig.setDatabase(database);
         LettuceClientConfiguration.LettuceClientConfigurationBuilder lettuceClientConfigurationBuilder = LettuceClientConfiguration.builder();
-
 
         if (isSslEnabled) {
             SslOptions sslOptions = SslOptions.builder()
-                    .trustManager(resourceLoader.getResource("classpath:redis.pem").getFile())
+                    .trustManager(resourceLoader.getResource("classpath:redis_cert.pem").getFile())
                     .build();
+
+          /*  SslOptions sslOptions = SslOptions.builder()
+                    .trustManager((SslOptions.Resource) new ByteArrayInputStream(pemCertificate.getBytes()))
+                    .build(); */
 
             ClientOptions clientOptions = ClientOptions
                     .builder()
@@ -77,11 +91,11 @@ public class RedisConfig {
                     .protocolVersion(ProtocolVersion.RESP2)
                     .build();
 
-                    lettuceClientConfigurationBuilder
+            lettuceClientConfigurationBuilder
                     .clientOptions(clientOptions)
                     .useSsl();
-                    //.startTls()
-                   // .build();
+            //.startTls()
+            // .build();
 
 
             // Configure SSL with LettuceClientConfiguration
@@ -99,6 +113,7 @@ public class RedisConfig {
             //       .useSsl().build());
         }
         LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig, lettuceClientConfigurationBuilder.build());
+
         return factory;
     }
 
@@ -127,6 +142,13 @@ public class RedisConfig {
     @Bean
     public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
+    }
+
+    @Bean
+    public StringRedisTemplate stringRedisTemplate(LettuceConnectionFactory redisConnectionFactory) {
+        StringRedisTemplate template = new StringRedisTemplate();
         template.setConnectionFactory(redisConnectionFactory);
         return template;
     }

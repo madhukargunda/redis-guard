@@ -23,7 +23,21 @@ public class RedisCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        redisService.saveValue("name", "madhu");
+        redisService.saveValue("firstName", "madhu");
+        redisService.saveValue("lastName", "g");
+        redisService.saveValue("fullname", "g madhukar");
+
         log.info("The value {}", redisService.getValue("name"));
+        log.info("The value {}", redisService.getValue("firstName"));
+        log.info("The value {}", redisService.getValue("lastName"));
+        log.info("The value {}", redisService.getValue("fullname"));
+
+        // redisService.saveValue("firstName", "madhu");
+
+        redisService.saveValue("COUNTRY", "SINGAPORE");
+        log.info("The value {}", redisService.getValue("COUNTRY"));
+
+        redisService.saveValue("string-1", "SINGAPORE");
+        redisService.saveValue("string-2", "india");
     }
 }

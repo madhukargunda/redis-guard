@@ -10,16 +10,20 @@ package io.madhu.redisGuard.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RedisService {
 
-    @Autowired
-    private final RedisTemplate<String, Object> redisTemplate;
+//    @Autowired
+//    private RedisTemplate<String, Object> redisTemplate;
 
     @Autowired
-    public RedisService(RedisTemplate<String, Object> redisTemplate) {
+    private final StringRedisTemplate redisTemplate;
+
+    @Autowired
+    public RedisService(StringRedisTemplate redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
