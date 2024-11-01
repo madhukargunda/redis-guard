@@ -60,8 +60,8 @@ public class RedisConfig {
     public LettuceConnectionFactory lettuceConnectionFactory() throws IOException {
         // Redis standalone configuration
         RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration("localhost", 6379);
-        redisConfig.setUsername("admin");
-        redisConfig.setPassword("madhukar");
+        redisConfig.setUsername(username);
+        redisConfig.setPassword(password);
 
         LettuceClientConfiguration.LettuceClientConfigurationBuilder lettuceClientConfigurationBuilder = LettuceClientConfiguration.builder();
 

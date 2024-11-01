@@ -55,6 +55,11 @@ port 0
 tls-cert-file /Users/madhu/work/Tools/redis-7.4.1/certis/redis.pem
 tls-key-file /Users/madhu/work/Tools/redis-7.4.1/certis/redis.key
 tls-ca-cert-file /Users/madhu/work/Tools/redis-7.4.1/certis/redis.pem
+
+tls-auth-clients optional # No Mutual TLS is optional
+
+user admin on >madhukar ~* +@all
+
 ```
 
 ### 5. Create Users in Redis
@@ -83,9 +88,33 @@ redis-server /path/to/redis.conf
 
 Start the Spring Boot application. It should now connect securely to the Redis server over TLS.
 
+To debug SSL issues in your Java application, you can add the following JVM option to enable debugging for SSL and TLS connections:
+
+-Djavax.net.debug=ssl:handshake:verbose
+
+
+### 8. Run the Redis CLI command with TLS to verify if the TLS configuration was set up correctly.
+
+madhu@Madhukars-MBP certis % redis-cli -h 127.0.0.1 -p 6379 --tls \
+--cert /Users/madhu/work/Tools/redis-7.4.1/certis/redis.pem \
+--key /Users/madhu/work/Tools/redis-7.4.1/certis/redis.pem \
+--cacert /Users/madhu/work/Tools/redis-7.4.1/certis/redis.pem
+
 ---
 
-This configuration enables a secure, SSL/TLS-protected connection between your Spring Boot application and Redis server using self-signed certificates.
-```
 
-You can copy and paste this directly into your `README.md`. This version omits the step for Spring Boot configuration.
+
+This configuration enables a secure, SSL/TLS-protected connection between your Spring Boot application and Redis server using self-signed certificates.
+
+![img.png](img.png)
+
+![img_1.png](img_1.png)
+
+![img_2.png](img_2.png)
+
+![img_3.png](img_3.png)
+
+![img_4.png](img_4.png)
+
+![img_5.png](img_5.png)
+```
