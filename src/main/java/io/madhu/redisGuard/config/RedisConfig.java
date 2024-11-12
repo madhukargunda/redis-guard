@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -49,6 +50,9 @@ public class RedisConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.file}")
+    private String file;
+
     @Value("${spring.data.redis.ssl-config.jks-password}")
     private String jksPassword;
 
@@ -78,7 +82,7 @@ public class RedisConfig {
 
         if (isSslEnabled) {
             SslOptions sslOptions = SslOptions.builder()
-                    .trustManager(resourceLoader.getResource("classpath:redis_cert.pem").getFile())
+                    .trustManager(resourceLoader.getResource(file).getFile())
                     .build();
 
           /*  SslOptions sslOptions = SslOptions.builder()
@@ -113,7 +117,7 @@ public class RedisConfig {
             //       .useSsl().build());
         }
         LettuceConnectionFactory factory = new LettuceConnectionFactory(redisConfig, lettuceClientConfigurationBuilder.build());
-
+      //  JedisConnectionFactory factory1 = new JedisConnectionFactory()
         return factory;
     }
 

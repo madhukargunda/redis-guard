@@ -8,6 +8,7 @@ spring:
       username: admin
       password: madhukar          # Password for Redis
       database: 1
+      file: classpath:redis_cert.pem
       ssl:                   # Enable SSL/TLS
        enable: true
 
